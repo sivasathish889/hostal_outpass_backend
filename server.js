@@ -14,7 +14,7 @@ const wardenModel = require("./Model/Schema/wardenModel");
 // envoronment variable
 env.config()
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000
 
 // middleware
 app.use(express.json())
@@ -39,5 +39,5 @@ app.use("/admin",adminPanel)
 
 
 app.listen(5000, () => {
-  console.log(`http://localhost:${PORT}`);
+  console.log(`server is running ${PORT}`);
 });
