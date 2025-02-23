@@ -1,60 +1,39 @@
 const express = require("express");
-const wardenModel = require("../Model/Schema/wardenModel");
-const newRequestModel = require("../Model/Schema/newRequestModel");
 const routes = express.Router();
 const {
   wardenLoginController,
+  wardenData,
+  wardenLoginVerify
+
 } = require("../Controller/wardenController/wardenLoginController");
 const {
-  passAcceptController,
-  passRejectConroller,
-  passPendingConroller,
-  allAcceptController,
+  passAccept,
+  passReject,
+  passPending,
+  allAcceptPass,
+  allRejectPass,
 } = require("../Controller/wardenController/passController");
+const { wardenForgetPassword, wardenChangePassword } = require("../Controller/wardenController/wardenForgetPassword");
+const otpVerifier = require("../Controller/verifyOTP");
 
 routes.post("/login", wardenLoginController);
 
-routes.put("/passAccept/:id", passAcceptController);
+routes.post('/forgetPassword', wardenForgetPassword)
 
-routes.put("/passReject/:id", passRejectConroller);
+routes.post('/changePassword', wardenChangePassword)
 
-routes.get("/pendingPasses", passPendingConroller);
-routes.get("/acceptPasses", (req,res)=>{
-  try {
-    newRequestModel.find({status:"2"}).sort({createdAt:"descending"})
-    .then((pass)=>{
-      return res
-              .json({message : "Accept Passes", pass, success : true})
-    })
-  } catch (error) {
-      return res
-              .json({message:error.message, success : false})
-  }
-});
+routes.post("/login/verify", otpVerifier)
 
-routes.get("/rejectPasses", (req,res)=>{
-  try {
-    newRequestModel.find({status:"3"}).sort({createdAt:"descending"})
-    .then((pass)=>{
-      return res
-              .json({message : "Accept Passes", pass, success : true})
-    })
-  } catch (error) {
-      return res
-              .json({message:error.message, success : false})
-  }
-});
+routes.put("/passAccept/:id", passAccept);
 
-routes.get("/:user",async(req,res)=>{
-    const userId = req.params.user;
-      try {
-        await wardenModel.find({_id:userId})
-        .then((data)=>{
-          return res.status(200).json({message : "Ok", data, success : true})
-        })
-      } catch (error) {
-        
-      }
+routes.put("/passReject/:id", passReject);
 
-})
+routes.get("/pendingPasses", passPending);
+
+routes.get("/acceptPasses",allAcceptPass);
+
+routes.get("/rejectPasses",allRejectPass);
+
+routes.get("/:user",wardenData)
+
 module.exports = routes;

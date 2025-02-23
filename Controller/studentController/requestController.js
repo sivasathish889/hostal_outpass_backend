@@ -1,7 +1,7 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const studentModel = require("../../Model/Schema/studentModel");
 
-const newRequestController = async (req, res) => {
+const newRequest = async (req, res) => {
   const { roomNo, destination, purpose, inDateTime, outDateTime, userId } =
     req.body;
   try {
@@ -39,7 +39,7 @@ const newRequestController = async (req, res) => {
   }
 };
 
-const pendingRequestsController = (req, res) => {
+const pendingRequests = (req, res) => {
   let { userId } = req.params;
   newRequestModel
     .find({ User: userId, status: 1 })
@@ -51,7 +51,7 @@ const pendingRequestsController = (req, res) => {
     });
 };
 
-const editingRequestController = async (req, res) => {
+const editingRequest = async (req, res) => {
   try {
     const { roomNo, destination, purpose, inDateTime, outDateTime, passId } =
       req.body;
@@ -78,7 +78,7 @@ const editingRequestController = async (req, res) => {
   }
 };
 
-const deletingPassController = async (req, res) => {
+const deletingPass = async (req, res) => {
   try {
     await newRequestModel.findByIdAndDelete(req.params.passId);
     return res.status(200).json({ message: "Pass Deleted", success: true });
@@ -87,7 +87,7 @@ const deletingPassController = async (req, res) => {
   }
 };
 
-const preRequestController = async (req, res) => {
+const preRequest = async (req, res) => {
   try {
     const userId = req.params.userId;
     await newRequestModel
@@ -104,9 +104,9 @@ const preRequestController = async (req, res) => {
 };
 
 module.exports = {
-  newRequestController,
-  preRequestController,
-  pendingRequestsController,
-  editingRequestController,
-  deletingPassController,
+  newRequest,
+  preRequest,
+  pendingRequests,
+  editingRequest,
+  deletingPass,
 };

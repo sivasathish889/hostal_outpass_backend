@@ -1,22 +1,31 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
-const wardenSchema = new mongoose.Schema({
-    userName : {
-        type : String,
-        required : true
+const wardenSchema = new mongoose.Schema(
+  {
+    userName: {
+      type: String,
+      required: true,
+      unique: true,
+      null: false,
     },
-    password : {
-        type : String,
-        required : true
+    password: {
+      type: String,
+      required: true,
     },
-    email : {
-        type : String,
-        required : true
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      null: false,
     },
-    phoneNumber : {
-        type : Number,
-        required : true
-    }
-},{timestamps:true})
+    phoneNumber: {
+      type: Number,
+      required: true,
+      unique: true,
+      null: false,
+    },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('Warden', wardenSchema)
+module.exports = mongoose.model("Warden", wardenSchema);
