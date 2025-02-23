@@ -52,8 +52,14 @@ const newReqestSchema = new mongoose.Schema({
     },
     User : {
         type : mongoose.Types.ObjectId,
-        ref : "StudentRegister",
+        ref : "Students",
         required : true
+    },
+    warden : {
+        type : mongoose.Types.ObjectId,
+        ref : "Warden",
+        required : true,
+        null : false
     }
 
 },{timestamps : true,})

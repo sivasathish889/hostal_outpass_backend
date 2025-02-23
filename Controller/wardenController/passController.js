@@ -1,6 +1,6 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 
-const passAcceptController = async (req, res) => {
+const passAccept = async (req, res) => {
   const passId = req.params.id;
   try {
     await newRequestModel
@@ -15,7 +15,7 @@ const passAcceptController = async (req, res) => {
     return res.json({ message: error.message, success: false });
   }
 };
-const passRejectConroller = async (req, res) => {
+const passReject = async (req, res) => {
   const passId = req.params.id;
   try {
     await newRequestModel
@@ -31,7 +31,7 @@ const passRejectConroller = async (req, res) => {
   }
 };
 
-const passPendingConroller = async (req, res) => {
+const passPending = async (req, res) => {
   try {
     await newRequestModel.find({ status: "1" }).then(async (pass) => {
       return res.json({ message: "fetching SuccessFull", pass, success: true });
@@ -41,10 +41,38 @@ const passPendingConroller = async (req, res) => {
   }
 };
 
-const allAcceptController = async (req, res) => {};
+const allAcceptPass = async (req, res) => {
+  try {
+    await newRequestModel
+      .find({ status: "2" })
+      .sort({ createdAt: "descending" })
+      .then((pass) => {
+        return res.json({ message: "Accept Passes", pass, success: true });
+      });
+  } catch (error) {
+    return res.json({ message: error.message, success: false });
+  }
+};
+
+const allRejectPass = async (req, res) => {
+  try {
+    await newRequestModel
+      .find({ status: "3" })
+      .sort({ createdAt: "descending" })
+      .then((pass) => {
+        return res.json({ message: "Reject Passes", pass, success: true });
+      });
+  } catch (error) {
+    return res.json({ message: error.message, success: false });
+  }
+};
+
+
+
 module.exports = {
-  passAcceptController,
-  passRejectConroller,
-  passPendingConroller,
-  allAcceptController,
+  passAccept,
+  passReject,
+  passPending,
+  allAcceptPass,
+  allRejectPass,
 };
