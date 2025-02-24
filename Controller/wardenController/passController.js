@@ -33,7 +33,7 @@ const passReject = async (req, res) => {
 
 const passPending = async (req, res) => {
   try {
-    await newRequestModel.find({ status: "1" }).then(async (pass) => {
+    await newRequestModel.find({ status: "1" }).then(async (pass) => {      
       return res.json({ message: "fetching SuccessFull", pass, success: true });
     });
   } catch (error) {
