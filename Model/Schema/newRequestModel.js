@@ -58,8 +58,6 @@ const newReqestSchema = new mongoose.Schema({
     warden : {
         type : mongoose.Types.ObjectId,
         ref : "Warden",
-        required : true,
-        null : false
     }
 
 },{timestamps : true,})
