@@ -24,9 +24,9 @@ routes.post('/changePassword', wardenChangePassword)
 
 routes.post("/login/verify", otpVerifier)
 
-routes.put("/passAccept/:id", passAccept);
+routes.put("/passAccept", passAccept);
 
-routes.put("/passReject/:id", passReject);
+routes.put("/passReject", passReject);
 
 routes.get("/pendingPasses", passPending);
 
