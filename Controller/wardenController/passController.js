@@ -1,10 +1,11 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 
 const passAccept = async (req, res) => {
-  const passId = req.params.id;
+  const { id, userId } = req.body;
+
   try {
     await newRequestModel
-      .findByIdAndUpdate(passId, { status: "2" }, { new: true })
+      .findByIdAndUpdate(id, { status: "2", warden: userId }, { new: true })
       .then(() => {
         return res.json({ message: "Pass Accepted", success: true });
       })
@@ -16,10 +17,10 @@ const passAccept = async (req, res) => {
   }
 };
 const passReject = async (req, res) => {
-  const passId = req.params.id;
+  const { id, userId } = req.body;
   try {
     await newRequestModel
-      .findByIdAndUpdate(passId, { status: "3" }, { new: true })
+      .findByIdAndUpdate(id, { status: "3", warden: userId }, { new: true })
       .then(() => {
         return res.json({ message: "Pass Rejected", success: true });
       })
@@ -33,7 +34,7 @@ const passReject = async (req, res) => {
 
 const passPending = async (req, res) => {
   try {
-    await newRequestModel.find({ status: "1" }).then(async (pass) => {      
+    await newRequestModel.find({ status: "1" }).then(async (pass) => {
       return res.json({ message: "fetching SuccessFull", pass, success: true });
     });
   } catch (error) {
@@ -66,8 +67,6 @@ const allRejectPass = async (req, res) => {
     return res.json({ message: error.message, success: false });
   }
 };
-
-
 
 module.exports = {
   passAccept,

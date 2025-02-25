@@ -1,7 +1,7 @@
 const securityModel = require("../../Model/Schema/securityModel");
 
 
-const securityData =  async (req, res) => {
+const securityData =  async (req, res) => {  
     const userId = req.params.user;
     try {
       await securityModel.find({ _id: userId }).then((data) => {

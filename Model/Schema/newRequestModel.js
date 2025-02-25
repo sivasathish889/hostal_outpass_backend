@@ -45,6 +45,12 @@ const newReqestSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    studentOutTime : {
+        type : String,
+    },
+    studentInTime : {
+        type : String
+    },
     status : {
         type : String,
         required : true,
@@ -58,6 +64,10 @@ const newReqestSchema = new mongoose.Schema({
     warden : {
         type : mongoose.Types.ObjectId,
         ref : "Warden",
+    }, 
+    security : {
+        type : mongoose.Types.ObjectId,
+        ref : "security"
     }
 
 },{timestamps : true,})
