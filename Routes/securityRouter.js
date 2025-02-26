@@ -38,13 +38,16 @@ routes.get("/finishedPasses", async (req, res) => {
   // };
 
   try {
-    await newRequestModel.find({ status: "2" }).then((pass) => {
-      return res.json({
-        message: "fetced Data successFully",
-        pass,
-        success: true,
+    await newRequestModel
+      .find({ status: "2" })
+      .sort({ createdAt: "descending" })
+      .then((pass) => {
+        return res.json({
+          message: "fetced Data successFully",
+          pass,
+          success: true,
+        });
       });
-    });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }
@@ -76,7 +79,11 @@ routes.put("/updateInTime", async (req, res) => {
     await newRequestModel
       .findByIdAndUpdate(
         id,
-        { studentInTime: new Date().toLocaleString(), security: userId , status : "completed"},
+        {
+          studentInTime: new Date().toLocaleString(),
+          security: userId,
+          status: "completed",
+        },
         { new: true }
       )
       .then(() => {
