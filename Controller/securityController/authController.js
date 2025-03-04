@@ -15,7 +15,7 @@ const securityLogin = async (req, res) => {
           let Email = user[0]?.email;
           let otp = Math.floor(Math.random() * 10000);
           let subject = "Hostal Outpass OTP";
-          let text = ` Security Login Verify...  Your OTP is ${otp}.`;
+          let text = `<h1> Dear Security </h1> <br> Your One Time Password (OTP) is ${otp}.`;
           await mailSender(Email, subject, text);
 
           let payload = {
@@ -45,7 +45,7 @@ const forgetPassword = async (req, res) => {
       let Email = user[0]?.email;
       let otp = Math.floor(Math.random() * 10000);
       let subject = "Hostal Outpass OTP";
-      let text = `Forget Password..  Your OTP is ${otp}.`;
+      let text = `<h1>Dear Security </h1> <br> To reset your password. </br> <h1> Your One-Time Password (OTP) is : ${otp}.</h1>`;
       await mailSender(Email, subject, text);
 
       let payload = {

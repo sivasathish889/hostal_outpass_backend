@@ -1,3 +1,4 @@
+const newRequestModel = require("../../Model/Schema/newRequestModel");
 const securityModel = require("../../Model/Schema/securityModel");
 
 const finishedPasses = async (req, res) => {
@@ -26,7 +27,8 @@ const finishedPasses = async (req, res) => {
           pass,
           success: true,
         });
-      });
+      })
+      
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }
