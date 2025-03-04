@@ -1,7 +1,42 @@
 const wardenModel = require("../../Model/Schema/wardenModel");
-const { comparePassword, generateHashPassword } = require("../../middleware/bcrypt");
-const { generateJwtToken } = require("../../middleware/jsonWebToken");
+const {
+  generateJwtToken,
+} = require("../../middleware/jsonWebToken");
 const mailSender = require("../../middleware/mailSender");
+const { comparePassword, generateHashPassword } = require("../../middleware/bcrypt");
+
+const wardenLoginController = async (req, res) => {
+  try {
+    const { userName, password } = req.body;
+    await wardenModel
+      .find({ userName: userName, password: password })
+      .then(async (user) => {
+        if (user.length > 0) {
+          let Email = user[0]?.email;
+          let otp = Math.floor(Math.random() * 10000);
+          let subject = "Hostal Outpass OTP";
+          let text = `<h1> Dear Warden </h1> <br> Your One Time Password (OTP) is ${otp}.`;
+          await mailSender(Email, subject, text);
+
+          let payload = {
+            otp,
+            user: user[0]?._id.toString(),
+          };
+          let Token = generateJwtToken({ payload });
+          let sendingEmailFormat = Email.split("@")[0].slice(0, 4);
+          return res.json({
+            message: `Otp send ${sendingEmailFormat}*****@gmail.com`,
+            Token,
+            success: true,
+          });
+        } else {
+          return res.json({ message: "UnAuthorized", success: false });
+        }
+      });
+  } catch (error) {
+    return res.json({ message: error.message, success: false });
+  }
+};
 
 const wardenForgetPassword = async (req, res) => {
   const { userName } = req.body;
@@ -10,7 +45,7 @@ const wardenForgetPassword = async (req, res) => {
       let Email = user[0]?.email;
       let otp = Math.floor(Math.random() * 10000);
       let subject = "Hostal Outpass OTP";
-      let text = `Forget Password..  Your OTP is ${otp}.`;
+      let text = `<h1>Dear Warden </h1> <br> To reset your password. </br> <h1> Your One-Time Password (OTP) is : ${otp}.</h1>`;
       await mailSender(Email, subject, text);
 
       let payload = {
@@ -59,7 +94,7 @@ const wardenChangePassword = async (req, res) => {
                 { new: true }
               );
               return res
-                .status(200)  
+                .status(200)
                 .json({ message: "Password Changed", success: true });
             }
           } else {
@@ -82,4 +117,16 @@ const wardenChangePassword = async (req, res) => {
     return res.json({ message: "Server error", success: false });
   }
 };
-module.exports = { wardenForgetPassword,wardenChangePassword };
+
+const wardenData = async (req, res) => {
+  const userId = req.params.user;
+  try {
+    await wardenModel.find({ _id: userId }).then((data) => {
+      return res.status(200).json({ message: "Ok", data, success: true });
+    });
+  } catch (error) {
+    return res.json({ message: error.message, success: false });
+  }
+};
+
+module.exports = { wardenLoginController, wardenData ,wardenForgetPassword, wardenChangePassword};

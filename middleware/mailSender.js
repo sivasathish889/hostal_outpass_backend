@@ -12,7 +12,7 @@ const emailSend =async (mail, sub, text)=>{
         from: process.env.MAIL_USER,
         to: mail,
         subject: sub,
-        text: text,
+        html : text
     }
     transport.sendMail(mailOptions, function(error, info){
         if (error) {

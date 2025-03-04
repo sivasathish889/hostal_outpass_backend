@@ -3,9 +3,9 @@ const routes = express.Router();
 const {
   wardenLoginController,
   wardenData,
-  wardenLoginVerify
-
-} = require("../Controller/wardenController/wardenLoginController");
+  wardenChangePassword,
+  wardenForgetPassword
+} = require("../Controller/wardenController/authController");
 const {
   passAccept,
   passReject,
@@ -13,7 +13,6 @@ const {
   allAcceptPass,
   allRejectPass,
 } = require("../Controller/wardenController/passController");
-const { wardenForgetPassword, wardenChangePassword } = require("../Controller/wardenController/wardenForgetPassword");
 const otpVerifier = require("../Controller/verifyOTP");
 
 routes.post("/login", wardenLoginController);

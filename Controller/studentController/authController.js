@@ -71,28 +71,36 @@ const registerController = async (req, res) => {
                 success: false,
               });
             } else {
-              let hashingPassword = generateHashPassword(password);
-              let otp = Math.floor(Math.random() * 10000);
-              let payload = {
-                name,
-                registerNumber,
-                department,
-                eMail,
-                year,
-                phoneNumber,
-                parentNumber,
-                district,
-                hashingPassword,
-                otp,
-              };
-              let Token = generateJwtToken({ payload });
-              let subject = "Hostal Outpass OTP";
-              let text = `<h1> Your OTP is ${otp}. This is expired in 5 Minutes </h1>`;
-              mailSender(eMail, subject, text);
-              //  cookie maximum age 5 minutes
-              return res
-                .status(200)
-                .json({ message: "OTP send", Token, success: true });
+              await studentModel.find({ Email: eMail }).then((emailUser) => {
+                if (emailUser.length > 0) {
+                  return res.json({
+                    message: "Email Already Used",
+                    success: false,
+                  });
+                } else {
+                  let hashingPassword = generateHashPassword(password);
+                  let otp = Math.floor(Math.random() * 10000);
+                  let payload = {
+                    name,
+                    registerNumber,
+                    department,
+                    eMail,
+                    year,
+                    phoneNumber,
+                    parentNumber,
+                    district,
+                    hashingPassword,
+                    otp,
+                  };
+                  let Token = generateJwtToken({ payload });
+                  let subject = "Hostal Outpass OTP";
+                  let text = `<h1>Dear ${name} </h1> <br> <h4> Thank you for initiating the account verification process.</h4> <br> <h1> Your One-Time Password (OTP) is :${otp}.</h1>`;
+                  mailSender(eMail, subject, text);
+                  return res
+                    .status(200)
+                    .json({ message: "OTP send", Token, success: true });
+                }
+              });
             }
           });
       } else {
@@ -153,7 +161,7 @@ const forgetPassword = async (req, res) => {
             let Email = user[0]?.Email;
             let otp = Math.floor(Math.random() * 10000);
             let subject = "Hostal Outpass OTP";
-            let text = `Forget Password..  Your OTP is ${otp}.`;
+            let text = `<h1>Dear User </h1> <br> To reset your password. </br> <h1> Your One-Time Password (OTP) is : ${otp}.</h1>`;
             await mailSender(Email, subject, text);
 
             let payload = {
@@ -249,5 +257,5 @@ module.exports = {
   registerOtpController,
   changePassword,
   forgetPassword,
-  studentData
+  studentData,
 };
