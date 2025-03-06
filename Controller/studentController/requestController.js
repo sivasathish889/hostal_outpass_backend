@@ -1,6 +1,6 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const studentModel = require("../../Model/Schema/studentModel");
-
+const wardenModel = require("../../Model/Schema/wardenModel")
 const newRequest = async (req, res) => {
   const { roomNo, destination, purpose, inDateTime, outDateTime, userId } =
     req.body;
@@ -92,6 +92,7 @@ const preRequest = async (req, res) => {
     const userId = req.params.userId;
     await newRequestModel
       .find({ User: userId, $or: [{ status: "3" }, { status: "2" }] })
+      .sort({ createdAt: "descending" })
       .then((data) => {
         return res.status(200).json({ message: "Users", data, success: true });
       })

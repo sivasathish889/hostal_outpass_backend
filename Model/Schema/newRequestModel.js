@@ -62,12 +62,10 @@ const newReqestSchema = new mongoose.Schema({
         required : true
     },
     warden : {
-        type : mongoose.Types.ObjectId,
-        ref : "Warden",
+        type : String,
     }, 
     security : {
-        type : mongoose.Types.ObjectId,
-        ref : "security"
+        type : String,
     }
 
 },{timestamps : true,})
