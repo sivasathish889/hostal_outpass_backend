@@ -27,65 +27,75 @@ const finishedPasses = async (req, res) => {
           pass,
           success: true,
         });
-      })
-      
-  } catch (error) {
-    return res.json({ message: error.message, success: false });
-  }
-};
-const updateOutTmePass =async (req, res) => {
-  const { id, userId } = req.body;
-  try {
-    await newRequestModel
-      .findByIdAndUpdate(
-        id,
-        { studentOutTime: new Date().toLocaleString(), security: userId },
-        { new: true }
-      )
-      .then(() => {
-        return res.json({ message: "Out Time Registered", success: true });
-      })
-      .catch((error) => {
-        return res.json({ message: error.message, success: false });
       });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }
-}
-
-const updateInTimePass = async (req, res) => {
+};
+const updateOutTmePass = async (req, res) => {
   const { id, userId } = req.body;
   try {
-  await newRequestModel.find({ _id: id }).then(async(data) => {
-    if (data.length > 0) {
-      if(data[0].studentOutTime != undefined){
-        await newRequestModel.findByIdAndUpdate(
+    await securityModel.find({ _id: userId }).then(async (data) => {
+      await newRequestModel
+        .findByIdAndUpdate(
           id,
           {
-            studentInTime: new Date().toLocaleString(),
-            security: userId,
-            status: "completed",
+            studentOutTime: new Date().toLocaleString(),
+            security: data[0].userName,
           },
           { new: true }
         )
         .then(() => {
-          return res.json({ message: "In Time Registered", success: true });
+          return res.json({ message: "Out Time Registered", success: true });
         })
         .catch((error) => {
           return res.json({ message: error.message, success: false });
         });
-      }
-      else{
-        return res.json({message : "First OutTime Register..!!", success : false})
-      }
-    }
-  });
- 
+    });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }
-}
+};
 
+const updateInTimePass = async (req, res) => {
+  const { id, userId } = req.body;
+  try {
+    await securityModel.find({ _id: userId }).then(async (data) => {
+      await newRequestModel.find({ _id: id }).then(async (data) => {
+        if (data.length > 0) {
+          if (data[0].studentOutTime != undefined) {
+            await newRequestModel
+              .findByIdAndUpdate(
+                id,
+                {
+                  studentInTime: new Date().toLocaleString(),
+                  security: userId,
+                  status: "completed",
+                },
+                { new: true }
+              )
+              .then(() => {
+                return res.json({
+                  message: "In Time Registered",
+                  success: true,
+                });
+              })
+              .catch((error) => {
+                return res.json({ message: error.message, success: false });
+              });
+          } else {
+            return res.json({
+              message: "First OutTime Register..!!",
+              success: false,
+            });
+          }
+        }
+      });
+    });
+  } catch (error) {
+    return res.json({ message: error.message, success: false });
+  }
+};
 
 const securityData = async (req, res) => {
   const userId = req.params.user;
@@ -98,4 +108,9 @@ const securityData = async (req, res) => {
   }
 };
 
-module.exports = { securityData, finishedPasses, updateOutTmePass, updateInTimePass };
+module.exports = {
+  securityData,
+  finishedPasses,
+  updateOutTmePass,
+  updateInTimePass,
+};

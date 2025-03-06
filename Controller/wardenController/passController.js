@@ -1,17 +1,24 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
+const wardenModel = require("../../Model/Schema/wardenModel");
 
 const passAccept = async (req, res) => {
   const { id, userId } = req.body;
 
   try {
-    await newRequestModel
-      .findByIdAndUpdate(id, { status: "2", warden: userId }, { new: true })
-      .then(() => {
-        return res.json({ message: "Pass Accepted", success: true });
-      })
-      .catch((error) => {
-        return res.json({ message: error.message, success: false });
-      });
+    await wardenModel.find({ _id: userId }).then(async (data) => {
+      await newRequestModel
+        .findByIdAndUpdate(
+          id,
+          { status: "2", warden: data[0].userName },
+          { new: true }
+        )
+        .then(() => {
+          return res.json({ message: "Pass Accepted", success: true });
+        })
+        .catch((error) => {
+          return res.json({ message: error.message, success: false });
+        });
+    });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }
@@ -19,14 +26,16 @@ const passAccept = async (req, res) => {
 const passReject = async (req, res) => {
   const { id, userId } = req.body;
   try {
-    await newRequestModel
-      .findByIdAndUpdate(id, { status: "3", warden: userId }, { new: true })
-      .then(() => {
-        return res.json({ message: "Pass Rejected", success: true });
-      })
-      .catch((error) => {
-        return res.json({ message: error.message, success: false });
-      });
+    await wardenModel.find({ _id: userId }).then(async (data) => {
+      await newRequestModel
+        .findByIdAndUpdate(id, { status: "3", warden: data[0].userName }, { new: true })
+        .then(() => {
+          return res.json({ message: "Pass Rejected", success: true });
+        })
+        .catch((error) => {
+          return res.json({ message: error.message, success: false });
+        });
+    });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }
