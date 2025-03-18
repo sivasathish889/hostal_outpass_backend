@@ -16,7 +16,7 @@ routes.post("/student/changePassword", changePassword);
 routes.post("/student/newRequest", newRequest);
 routes.get("/student/pendingRequests/:userId", pendingRequests);
 routes.put("/student/passUpdate", editingRequest);
-routes.delete("/student/passDelete/:passId",deletingPass)
+routes.post("/student/passDelete/:passId",deletingPass)
 
 routes.get("/student/AllRequests/:userId", preRequest);
 routes.get('/student/:userId',studentData)
