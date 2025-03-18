@@ -56,6 +56,10 @@ const newReqestSchema = new mongoose.Schema({
         required : true,
         default  : 1
     },
+    delete :{
+        type : Boolean,
+        default : false
+    },
     User : {
         type : mongoose.Types.ObjectId,
         ref : "Students",

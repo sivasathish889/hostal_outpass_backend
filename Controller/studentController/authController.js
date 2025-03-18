@@ -96,9 +96,14 @@ const registerController = async (req, res) => {
                   let subject = "Hostal Outpass OTP";
                   let text = `<h1>Dear ${name} </h1> <br> <h4> Thank you for initiating the account verification process.</h4> <br> <h1> Your One-Time Password (OTP) is :${otp}.</h1>`;
                   mailSender(eMail, subject, text);
+                  let sendingEmailFormat = eMail.split("@")[0].slice(0, 4);
                   return res
                     .status(200)
-                    .json({ message: "OTP send", Token, success: true });
+                    .json({
+                      message: `Otp send ${sendingEmailFormat}*****@gmail.com`,
+                      Token,
+                      success: true,
+                    });
                 }
               });
             }

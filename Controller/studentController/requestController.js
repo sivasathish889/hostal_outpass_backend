@@ -1,6 +1,6 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const studentModel = require("../../Model/Schema/studentModel");
-const wardenModel = require("../../Model/Schema/wardenModel")
+
 const newRequest = async (req, res) => {
   const { roomNo, destination, purpose, inDateTime, outDateTime, userId } =
     req.body;
@@ -42,7 +42,7 @@ const newRequest = async (req, res) => {
 const pendingRequests = (req, res) => {
   let { userId } = req.params;
   newRequestModel
-    .find({ User: userId, status: 1 })
+    .find({ User: userId, status: 1, delete: false })
     .then((pass) => {
       return res.status(200).json({ pass, success: true });
     })
@@ -80,7 +80,9 @@ const editingRequest = async (req, res) => {
 
 const deletingPass = async (req, res) => {
   try {
-    await newRequestModel.findByIdAndDelete(req.params.passId);
+    await newRequestModel.findByIdAndUpdate(req.params.passId, {
+      delete: true,
+    });
     return res.status(200).json({ message: "Pass Deleted", success: true });
   } catch (error) {
     return res.json({ message: "Server Error", success: false });
@@ -91,7 +93,11 @@ const preRequest = async (req, res) => {
   try {
     const userId = req.params.userId;
     await newRequestModel
-      .find({ User: userId, $or: [{ status: "3" }, { status: "2" }] })
+      .find({
+        User: userId,
+        $or: [{ status: "3" }, { status: "2" }],
+        delete: false,
+      })
       .sort({ createdAt: "descending" })
       .then((data) => {
         return res.status(200).json({ message: "Users", data, success: true });
