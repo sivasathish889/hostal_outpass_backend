@@ -20,7 +20,7 @@ const newRequest = async (req, res) => {
           Department: user[0].Department,
           PhoneNumber: user[0].PhoneNumber,
           ParentNumber: user[0].ParentNumber,
-          Distination: destination,
+          Destination: destination,
           InDateTime: inDateTime,
           OutDateTime: outDateTime,
           Purpose: purpose,
