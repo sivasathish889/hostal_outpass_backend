@@ -25,7 +25,7 @@ const newReqestSchema = new mongoose.Schema({
         type : Number,
         required : true
     },
-    Distination : {
+    Destination : {
         type : String,
         required : true
     },
