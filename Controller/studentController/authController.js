@@ -63,6 +63,9 @@ const registerController = async (req, res) => {
       password != null &&
       confirmPassword != null
     ) {
+      if (phoneNumber == parentNumber) {
+        return res.json({ message: "Phone Number Same", success: false });
+      }
       if (password === confirmPassword) {
         await studentModel
           .find({ RegisterNumber: registerNumber })
@@ -100,13 +103,11 @@ const registerController = async (req, res) => {
                   let text = `<h1>Dear ${name} </h1> <br> <h4> Thank you for initiating the account verification process.</h4> <br> <h1> Your One-Time Password (OTP) is :${otp}.</h1>`;
                   mailSender(eMail, subject, text);
                   let sendingEmailFormat = eMail.split("@")[0].slice(0, 4);
-                  return res
-                    .status(200)
-                    .json({
-                      message: `Otp send ${sendingEmailFormat}*****@gmail.com`,
-                      Token,
-                      success: true,
-                    });
+                  return res.status(200).json({
+                    message: `Otp send ${sendingEmailFormat}*****@gmail.com`,
+                    Token,
+                    success: true,
+                  });
                 }
               });
             }
@@ -137,7 +138,7 @@ const registerOtpController = async (req, res) => {
           RegisterNumber: userData.registerNumber,
           Department: userData.department,
           year: userData.year,
-          Gender : userData.gender,
+          Gender: userData.gender,
           PhoneNumber: userData.phoneNumber,
           ParentNumber: userData.parentNumber,
           District: userData.district,
