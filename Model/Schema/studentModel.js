@@ -20,6 +20,10 @@ const studentSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    Gender : {
+      type : String,
+      required : true
+    },
     PhoneNumber: {
       type: Number,
       required: true,

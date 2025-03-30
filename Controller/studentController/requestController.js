@@ -1,9 +1,13 @@
+const {
+  UserBindingContextImpl,
+} = require("twilio/lib/rest/ipMessaging/v2/service/user/userBinding");
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const studentModel = require("../../Model/Schema/studentModel");
 
 const newRequest = async (req, res) => {
   const { roomNo, destination, purpose, inDateTime, outDateTime, userId } =
     req.body;
+  let gender;
   try {
     if (
       destination ||
@@ -12,14 +16,16 @@ const newRequest = async (req, res) => {
       (outDateTime && inDateTime) ||
       userId
     ) {
-      await studentModel.find({ _id: userId }).then((user) => {
+      await studentModel.findOne({ _id: userId }).then((user) => {
+        gender = user.Gender
         newRequestModel.create({
-          RegisterNumber: user[0].RegisterNumber,
-          name: user[0].name,
-          year: user[0].year,
-          Department: user[0].Department,
-          PhoneNumber: user[0].PhoneNumber,
-          ParentNumber: user[0].ParentNumber,
+          RegisterNumber: user.RegisterNumber,
+          name: user.name,
+          year: user.year,
+          Department: user.Department,
+          PhoneNumber: user.PhoneNumber,
+          ParentNumber: user.ParentNumber,
+          Gender: user.Gender,
           Destination: destination,
           InDateTime: inDateTime,
           OutDateTime: outDateTime,
@@ -30,7 +36,7 @@ const newRequest = async (req, res) => {
       });
       return res
         .status(200)
-        .json({ message: "Request Created", success: true });
+        .json({ message: "Request Created", gender, success: true });
     } else {
       return res.json({ message: "Invalid Creditionals", success: false });
     }
