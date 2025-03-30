@@ -24,6 +24,11 @@ const wardenSchema = new mongoose.Schema(
       unique: true,
       null: false,
     },
+    role : {
+      type : String,
+      required : true,
+      null : false,
+    }
   },
   { timestamps: true }
 );

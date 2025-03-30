@@ -4,13 +4,17 @@ const otpVerifier = (req, res) => {
   try {
     const { backendOtp, otp } = req.body;
     const verifyOtp = verifyJwtToken(backendOtp).payload.otp;
-    const user = verifyJwtToken(backendOtp).payload.user    
-    
-
+    const user = verifyJwtToken(backendOtp).payload.user;
+    const wardenRole = verifyJwtToken(backendOtp).payload.role;
     if (Number(otp) === Number(verifyOtp)) {
       return res
         .status(200)
-        .json({ message: "OTP successfully verified", user, success: true });
+        .json({
+          message: "OTP successfully verified",
+          user,
+          wardenRole,
+          success: true,
+        });
     } else {
       return res.json({ message: "Wrong OTP", success: false });
     }
@@ -19,5 +23,4 @@ const otpVerifier = (req, res) => {
   }
 };
 
-
-module.exports = otpVerifier
+module.exports = otpVerifier;

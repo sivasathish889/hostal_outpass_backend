@@ -29,6 +29,10 @@ const newReqestSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    Gender : {
+        type : String,
+        required : true
+    },
     RoomNo : {
         type : String,
         required : true

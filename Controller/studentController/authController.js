@@ -43,6 +43,7 @@ const registerController = async (req, res) => {
       department,
       eMail,
       year,
+      gender,
       phoneNumber,
       parentNumber,
       district,
@@ -55,6 +56,7 @@ const registerController = async (req, res) => {
       department != null &&
       eMail != null &&
       year != null &&
+      gender != null &&
       phoneNumber != null &&
       parentNumber != null &&
       district != null &&
@@ -86,6 +88,7 @@ const registerController = async (req, res) => {
                     department,
                     eMail,
                     year,
+                    gender,
                     phoneNumber,
                     parentNumber,
                     district,
@@ -134,6 +137,7 @@ const registerOtpController = async (req, res) => {
           RegisterNumber: userData.registerNumber,
           Department: userData.department,
           year: userData.year,
+          Gender : userData.gender,
           PhoneNumber: userData.phoneNumber,
           ParentNumber: userData.parentNumber,
           District: userData.district,

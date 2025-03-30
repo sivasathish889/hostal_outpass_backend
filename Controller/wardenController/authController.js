@@ -18,9 +18,11 @@ const wardenLoginController = async (req, res) => {
           let text = `<h1> Dear Warden </h1> <br> Your One Time Password (OTP) is ${otp}.`;
           await mailSender(Email, subject, text);
 
+          console.log(user[0].role)
           let payload = {
             otp,
             user: user[0]?._id.toString(),
+            role : user[0].role
           };
           let Token = generateJwtToken({ payload });
           let sendingEmailFormat = Email.split("@")[0].slice(0, 4);

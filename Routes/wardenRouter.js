@@ -27,11 +27,11 @@ routes.put("/passAccept", passAccept);
 
 routes.put("/passReject", passReject);
 
-routes.get("/pendingPasses", passPending);
+routes.get("/pendingPasses/:id", passPending);
 
-routes.get("/acceptPasses",allAcceptPass);
+routes.get("/acceptPasses/:id",allAcceptPass);
 
-routes.get("/rejectPasses",allRejectPass);
+routes.get("/rejectPasses/:id",allRejectPass);
 
 routes.get("/:user",wardenData)
 
