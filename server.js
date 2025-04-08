@@ -23,7 +23,7 @@ app.use(cookie_parser())
 
 app.use(cors({
   credentials : true,
-  methods : ['GET', 'POST', 'PUT'],
+  methods : ['GET', 'POST', 'PUT','DELETE'],
 }))
 
 
@@ -35,7 +35,7 @@ app.use(Logger)
 app.use("/",studentRouter)
 app.use("/warden",wardenRouter)
 app.use("/security",securityRouter)
-app.use("/admin",adminPanel)
+app.use("/api/admin",adminPanel)
 
 
 app.listen(5000, () => {

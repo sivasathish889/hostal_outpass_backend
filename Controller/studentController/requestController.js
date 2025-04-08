@@ -1,6 +1,4 @@
-const {
-  UserBindingContextImpl,
-} = require("twilio/lib/rest/ipMessaging/v2/service/user/userBinding");
+
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const studentModel = require("../../Model/Schema/studentModel");
 
