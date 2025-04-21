@@ -18,6 +18,7 @@ const {
   updateSecurity,
   deleteSecurity,
 } = require("../Controller/adminController/security");
+const {login,register} = require("../Controller/adminController/auth");
 const routes = express.Router();
 
 routes.get("/getStudentList", getStudentList);
@@ -26,13 +27,19 @@ routes.get("/getSecurityList", getSecurity);
 routes.get("/getPass", getPass);
 
 routes.delete("/deletePass/:id", deletePass);
+
 routes.post("/createWarden", createWarden);
 routes.put("/updateWarden/:_id", updateWarden);
 routes.delete("/deleteWarden/:_id", deleteWarden);
 
-routes.put("/updateStudent/:_id", updateStudent);
 routes.post("/createSecurity", createSecurity);
 routes.put("/updateSecurity/:_id", updateSecurity);
 routes.delete("/deleteSecurity/:_id", deleteSecurity);
+
 routes.delete("/deleteStudent/:_id", deleteStudent);
+routes.put("/updateStudent/:_id", updateStudent);
+
+routes.post("/login", login);
+routes.post("/register",register)
+
 module.exports = routes;
