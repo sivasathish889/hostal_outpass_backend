@@ -19,7 +19,11 @@ const login = async (req, res) => {
         const passCompare = comparePassword(password, user.password);
         const userID = user._id;
         if (passCompare) {
-          return res.json({ message: "Login Successful", success: true, userID });
+          return res.json({
+            message: "Login Successful",
+            success: true,
+            userID,
+          });
         } else {
           return res.json({ message: "Incorrect Password", success: false });
         }
@@ -53,4 +57,18 @@ const register = async (req, res) => {
   } catch (error) {}
 };
 
-module.exports = { login, register };
+const getUserData = async (req, res) => {
+  const { id } = req.params;
+  try {
+    if (id) {
+      await adminModel.findById(id).then((data) => {
+        return res.json({ message: "data fetched", data, success: true });
+      });
+    } else {
+      return res.json({ message: "Fetched Error", success: false });
+    }
+  } catch (error) {
+    return res.json({ message: "server error", success: false });
+  }
+};
+module.exports = { login, register, getUserData };
