@@ -43,26 +43,6 @@ app.use("/warden",wardenRouter)
 app.use("/security",securityRouter)
 app.use("/api/admin",adminPanel)
 
-app.post("/api/notification", async (req, res) => {
-  const { title, body ,token} = req.body;
-  const message = {
-    notification: {
-      title: title,
-      body: body,
-    },
-    token : 'ekuf7ON4TiCf4OGuPNqdy6:APA91bFP6Ct9Dhn6gO8uSe4gVb39Dv1iqPRbSvCfV9jqYXW3p1Sw9oMBCKm-VR5C2VQ5qNbImeQ9b2DvcBnoCiRgiKsJPz4syT7GmFkAAfCHpsGzt-OO838'
-  };
-console.log(req.body)
-  try {
-    const response = await admin.messaging().send(message);
-    console.log("Notification sent successfully:", response);
-    res.status(200).json({ message: "Notification sent successfully" });
-  } catch (error) {
-    console.error("Error sending notification:", error);
-    res.status(500).json({ error: "Failed to send notification" });
-  }
-}
-)
 
 app.listen(5000, () => {
   console.log(`server is running ${PORT}`);

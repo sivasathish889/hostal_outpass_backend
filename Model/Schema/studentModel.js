@@ -20,9 +20,9 @@ const studentSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    Gender : {
-      type : String,
-      required : true
+    Gender: {
+      type: String,
+      required: true,
     },
     PhoneNumber: {
       type: Number,
@@ -45,6 +45,11 @@ const studentSchema = new mongoose.Schema(
     Password: {
       type: String,
       required: true,
+    },
+    FCMToken: {
+      type: String,
+      required: false,
+      default : null
     },
   },
   { timestamps: true }

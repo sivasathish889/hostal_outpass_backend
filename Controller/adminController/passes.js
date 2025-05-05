@@ -3,7 +3,7 @@ const newRequestModel = require("../../Model/Schema/newRequestModel");
 const getPass = async (req, res) => {
     try {
       await newRequestModel
-        .find({ status: "completed", delete: false })
+        .find()
         .then((users) => {
           return res.json({ message: "Passes details", users, success: true });
         });

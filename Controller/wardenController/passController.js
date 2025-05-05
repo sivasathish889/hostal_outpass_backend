@@ -51,7 +51,7 @@ const passPending = async (req, res) => {
       .findOne({ _id: req.params.id })
       .then(async (wardenName) => {
         await newRequestModel
-          .find({ status: "1", delete: false, Gender: wardenName.role })
+          .find({ status: "1", delete: false, Gender: wardenName.gender })
           .then(async (pass) => {
             return res.json({
               message: "fetching SuccessFull",

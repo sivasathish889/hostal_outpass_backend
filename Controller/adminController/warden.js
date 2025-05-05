@@ -36,7 +36,7 @@ const createWarden = async (req, res) => {
                 .create({
                   userName: userName,
                   email: email,
-                  role: gender,
+                  gender: gender,
                   phoneNumber: phoneNumber,
                   password: hashPassword,
                 })
@@ -59,43 +59,57 @@ const createWarden = async (req, res) => {
 
 const updateWarden = async (req, res) => {
   const _id = req.params;
-  const { userName, email, phoneNumber, role } = req.body;
+  const { userName, email, phoneNumber, gender } = req.body;
   try {
-    await wardenModel
-      .find({ $or: [{ userName }, { email }] })
-      .then(async (user) => {
-        if (user.length > 0) {
-          return res.json({
-            message: "Email & Username already created",
-            success: false,
-          });
-        }
-        await wardenModel.find({ phoneNumber }).then(async (exisitPhone) => {
-          if (exisitPhone.length > 0) {
-            return res.json({
-              message: "Phone Number already used",
-              success: false,
-            });
-          } else {
-            await wardenModel
-              .findByIdAndUpdate(_id, {
-                userName,
-                email,
-                phoneNumber,
-                role,
-              })
-              .then(() => {
-                return res.json({
-                  message: "Updated Successfully",
-                  success: true,
-                });
-              })
-              .catch((error) => {
-                return res.json({ message: error.message, success: false });
-              });
-          }
+    await wardenModel.findOne({ _id }).then(async (existingWarden) => {
+      if (!existingWarden) {
+        return res.json({
+          message: "Warden not found",
+          success: false,
         });
-      });
+      } else {
+        await wardenModel
+          .findOne({ email, _id: { $ne: _id } })
+          .then(async (user) => {
+            if (user) {
+              return res.json({
+                message: "Email already in use by another user",
+                success: false,
+              });
+            }
+            await wardenModel
+              .findOne({ userName, _id: { $ne: _id } })
+              .then(async (user) => {
+                if (user) {
+                  return res.json({
+                    message: "Username already in use by another user",
+                    success: false,
+                  });
+                } else {
+                  await wardenModel
+                    .findByIdAndUpdate(_id, {
+                      userName,
+                      email,
+                      phoneNumber,
+                      gender,
+                    })
+                    .then(() => {
+                      return res.json({
+                        message: "Updated Successfully",
+                        success: true,
+                      });
+                    })
+                    .catch((error) => {
+                      return res.json({
+                        message: error.message,
+                        success: false,
+                      });
+                    });
+                }
+              });
+          });
+      }
+    });
   } catch (error) {
     return res.json({ message: "Internel Server Error", success: false });
   }
