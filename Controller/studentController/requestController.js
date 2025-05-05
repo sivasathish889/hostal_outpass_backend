@@ -1,6 +1,8 @@
-
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const studentModel = require("../../Model/Schema/studentModel");
+const wardenModel = require("../../Model/Schema/wardenModel");
+const notificationSend = require("../../middleware/notificationSend");
+
 
 const newRequest = async (req, res) => {
   const { roomNo, destination, purpose, inDateTime, outDateTime, userId } =
@@ -14,9 +16,9 @@ const newRequest = async (req, res) => {
       (outDateTime && inDateTime) ||
       userId
     ) {
-      await studentModel.findOne({ _id: userId }).then((user) => {
-        gender = user.Gender
-        newRequestModel.create({
+      await studentModel.findOne({ _id: userId }).then(async (user) => {
+        gender = user.Gender;
+        await newRequestModel.create({
           RegisterNumber: user.RegisterNumber,
           name: user.name,
           year: user.year,
@@ -30,6 +32,19 @@ const newRequest = async (req, res) => {
           Purpose: purpose,
           RoomNo: roomNo,
           User: userId,
+        });
+        await wardenModel.find({ gender : user.Gender }).then((wardenData) => {
+          if (wardenData.length > 0) {
+            wardenData.map((data) => {
+              if (data.FCMToken) {
+                notificationSend(
+                  "Hostel Outpass",
+                  "New Outpass Request",
+                  data.FCMToken
+                );
+              }
+            });
+          }
         });
       });
       return res

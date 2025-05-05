@@ -11,26 +11,33 @@ const {
 
 const LoginController = async (req, res) => {
   try {
-    const { registerNumber, password } = req.body;
-    await studentModel.find({ RegisterNumber: registerNumber }).then((user) => {
-      if (user.length > 0) {
-        if (comparePassword(password, user[0]?.Password)) {
-          return res.status(200).json({
-            message: "Login Successfull",
-            success: true,
-            user: user[0]?._id.toString(),
-          });
+    const { registerNumber, password, fcmToken } = req.body;
+    await studentModel
+      .find({ RegisterNumber: registerNumber })
+      .then(async (user) => {
+        if (user.length > 0) {
+          if (comparePassword(password, user[0]?.Password)) {
+            await studentModel.findByIdAndUpdate(user[0]._id, {
+              FCMToken: fcmToken,
+            });
+            return res.status(200).json({
+              message: "Login Successfull",
+              success: true,
+              user: user[0]?._id.toString(),
+            });
+          } else {
+            return res.json({ message: "Incorrect Password", success: false });
+          }
         } else {
-          return res.json({ message: "Incorrect Password", success: false });
+          return res.json({
+            message: "Register Number Not found",
+            success: false,
+          });
         }
-      } else {
-        return res.json({
-          message: "Register Number Not found",
-          success: false,
-        });
-      }
-    });
+      });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ message: error.message, success: false });
   }
 };

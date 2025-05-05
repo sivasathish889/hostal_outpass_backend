@@ -1,17 +1,18 @@
 const securityModel = require("../../Model/Schema/securityModel");
-const { comparePassword, generateHashPassword } = require("../../middleware/bcrypt");
 const {
-  generateJwtToken,
-} = require("../../middleware/jsonWebToken");
+  comparePassword,
+  generateHashPassword,
+} = require("../../middleware/bcrypt");
+const { generateJwtToken } = require("../../middleware/jsonWebToken");
 const mailSender = require("../../middleware/mailSender");
 
 const securityLogin = async (req, res) => {
   try {
     const { userName, password } = req.body;
-    await securityModel
-      .find({ userName: userName, password: password })
-      .then(async (user) => {
-        if (user.length > 0) {
+    await securityModel.find({ userName: userName }).then(async (user) => {
+      if (user.length > 0) {
+        const isPassword = comparePassword(password, user[0]?.password);
+        if (isPassword) {
           let Email = user[0]?.email;
           let otp = Math.floor(Math.random() * 10000);
           let subject = "Hostal Outpass OTP";
@@ -20,7 +21,7 @@ const securityLogin = async (req, res) => {
 
           let payload = {
             otp,
-            user:user[0]?._id.toString()
+            user: user[0]?._id.toString(),
           };
           let Token = generateJwtToken({ payload });
           let sendingEmailFormat = Email.split("@")[0].slice(0, 4);
@@ -29,10 +30,15 @@ const securityLogin = async (req, res) => {
             Token,
             success: true,
           });
-        } else {
-          return res.json({ message: "UnAuthorized", success: false });
         }
-      });
+        else{
+        return res.json({ message: "Incorrect Password", success: false });
+
+        }
+      } else {
+        return res.json({ message: "UnAuthorized", success: false });
+      }
+    });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }

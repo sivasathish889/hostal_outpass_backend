@@ -25,6 +25,12 @@ const securitySchema = new mongoose.Schema(
       unique: true,
       null: false,
     },
+    FCMToken: {
+      type: String,
+      required: false,
+      null: true,
+      default : null
+    },
   },
   { timestamps: true }
 );

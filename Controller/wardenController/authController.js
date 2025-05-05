@@ -1,28 +1,27 @@
 const wardenModel = require("../../Model/Schema/wardenModel");
-const {
-  generateJwtToken,
-} = require("../../middleware/jsonWebToken");
+const { generateJwtToken } = require("../../middleware/jsonWebToken");
 const mailSender = require("../../middleware/mailSender");
-const { comparePassword, generateHashPassword } = require("../../middleware/bcrypt");
+const {
+  comparePassword,
+  generateHashPassword,
+} = require("../../middleware/bcrypt");
 
 const wardenLoginController = async (req, res) => {
   try {
     const { userName, password } = req.body;
-    await wardenModel
-      .find({ userName: userName, password: password })
-      .then(async (user) => {
-        if (user.length > 0) {
+    await wardenModel.find({ userName }).then(async (user) => {
+      if (user.length > 0) {
+        const isPasswordMatch = comparePassword(password, user[0]?.password);
+        if (isPasswordMatch) {
           let Email = user[0]?.email;
           let otp = Math.floor(Math.random() * 10000);
           let subject = "Hostal Outpass OTP";
           let text = `<h1> Dear Warden </h1> <br> Your One Time Password (OTP) is ${otp}.`;
           await mailSender(Email, subject, text);
-
-          console.log(user[0].role)
           let payload = {
             otp,
             user: user[0]?._id.toString(),
-            role : user[0].role
+            gender: user[0].gender,
           };
           let Token = generateJwtToken({ payload });
           let sendingEmailFormat = Email.split("@")[0].slice(0, 4);
@@ -31,10 +30,17 @@ const wardenLoginController = async (req, res) => {
             Token,
             success: true,
           });
-        } else {
-          return res.json({ message: "UnAuthorized", success: false });
         }
-      });
+        else{
+          return res.json({
+            message: "Password Not Match",
+            success: false,
+          });
+        }
+      } else {
+        return res.json({ message: "UnAuthorized", success: false });
+      }
+    });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }
@@ -131,4 +137,9 @@ const wardenData = async (req, res) => {
   }
 };
 
-module.exports = { wardenLoginController, wardenData ,wardenForgetPassword, wardenChangePassword};
+module.exports = {
+  wardenLoginController,
+  wardenData,
+  wardenForgetPassword,
+  wardenChangePassword,
+};
