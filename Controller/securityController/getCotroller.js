@@ -1,6 +1,7 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const securityModel = require("../../Model/Schema/securityModel");
-
+const studentModel = require("../../Model/Schema/studentModel");
+const notificationSend = require("../../middleware/notificationSend");
 const finishedPasses = async (req, res) => {
   // console.log("iush");
   // const date = new Date();
@@ -35,25 +36,33 @@ const finishedPasses = async (req, res) => {
 const updateOutTmePass = async (req, res) => {
   const { id, userId } = req.body;
   try {
-    await securityModel
-      .find({ _id: userId })
-      .then(async (data) => {
-        await newRequestModel
-          .findByIdAndUpdate(
-            id,
-            {
-              studentOutTime: new Date().toLocaleString(),
-              security: data[0].userName,
-            },
-            { new: true }
-          )
-          .then(() => {
-            return res.json({ message: "Out Time Registered", success: true });
-          })
-          .catch((error) => {
-            return res.json({ message: error.message, success: false });
+    await securityModel.findById(userId).then(async (data) => {
+      await newRequestModel
+        .findByIdAndUpdate(
+          id,
+          {
+            studentOutTime: new Date().toLocaleString(),
+            security: data.userName,
+          },
+          { new: true }
+        )
+        .then(async () => {
+          await studentModel.findById(id).then(async (studentData) => {
+            if (studentData.FCMToken) {
+               const dataPayload = {
+                    title: "Your Pass In Time Registered",
+                    body: `Your Pass In Time Registered By ${data.userName}`,
+                    screen: "/(student)/(tabs)/prevPass",
+                  };
+              notificationSend(studentData.FCMToken, dataPayload);
+            }
           });
-      });
+          return res.json({ message: "Out Time Registered", success: true });
+        })
+        .catch((error) => {
+          return res.json({ message: error.message, success: false });
+        });
+    });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }
@@ -62,40 +71,46 @@ const updateOutTmePass = async (req, res) => {
 const updateInTimePass = async (req, res) => {
   const { id, userId } = req.body;
   try {
-    await securityModel
-      .find({ _id: userId })
-      .then(async (userData) => {
-        await newRequestModel.find({ _id: id }).then(async (data) => {
-          if (data.length > 0) {
-            if (data[0].studentOutTime != undefined) {
-              await newRequestModel
-                .findByIdAndUpdate(
-                  id,
-                  {
-                    studentInTime: new Date().toLocaleString(),
-                    security: userData[0]?.userName,
-                    status: "completed",
-                  },
-                  { new: true }
-                )
-                .then(() => {
-                  return res.json({
-                    message: "In Time Registered",
-                    success: true,
-                  });
-                })
-                .catch((error) => {
-                  return res.json({ message: error.message, success: false });
-                });
-            } else {
-              return res.json({
-                message: "First OutTime Register..!!",
-                success: false,
+    await securityModel.find({ _id: userId }).then(async (userData) => {
+      await newRequestModel.findById(userId).then(async (data) => {
+        if (data.studentOutTime != undefined) {
+          await newRequestModel
+            .findByIdAndUpdate(
+              id,
+              {
+                studentInTime: new Date().toLocaleString(),
+                security: userData.userName,
+                status: "completed",
+              },
+              { new: true }
+            )
+            .then(async () => {
+              await studentModel.findById(id).then(async (studentData) => {
+                if (studentData.FCMToken) {
+                  const dataPayload = {
+                    title: "Your Pass Out Time Registered",
+                    body: `Your Pass Out Time Registered By ${data.userName}`,
+                    screen: "/(student)/(tabs)/prevPass",
+                  };
+                  notificationSend(studentData.FCMToken, dataPayload);
+                }
               });
-            }
-          }
-        });
+              return res.json({
+                message: "In Time Registered",
+                success: true,
+              });
+            })
+            .catch((error) => {
+              return res.json({ message: error.message, success: false });
+            });
+        } else {
+          return res.json({
+            message: "First OutTime Register..!!",
+            success: false,
+          });
+        }
       });
+    });
   } catch (error) {
     return res.json({ message: error.message, success: false });
   }

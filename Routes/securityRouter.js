@@ -14,7 +14,6 @@ const {
   updateInTimePass,
 } = require("../Controller/securityController/getCotroller");
 const otpVerifier = require("../Controller/verifyOTP");
-const newRequestModel = require("../Model/Schema/newRequestModel");
 
 routes.post("/login", securityLogin);
 
