@@ -1,18 +1,28 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const wardenModel = require("../../Model/Schema/wardenModel");
-
+const studentModel = require("../../Model/Schema/studentModel");
 const passAccept = async (req, res) => {
   const { id, userId } = req.body;
 
   try {
-    await wardenModel.find({ _id: userId }).then(async (data) => {
+    await wardenModel.findById(userId).then(async (data) => {
       await newRequestModel
         .findByIdAndUpdate(
           id,
-          { status: "2", warden: data[0].userName },
+          { status: "2", warden: data.userName },
           { new: true }
         )
-        .then(() => {
+        .then(async () => {
+          await studentModel.findById(id).then((studentData) => {
+            if (studentData.FCMToken) {
+              const dataPayload = {
+                title: "Your Pass Accepted",
+                body: `Your Pass Accepted By ${data.userName}`,
+                screen: "/(student)/(tabs)/prevPass",
+              };
+              notificationSend(studentData.FCMToken, dataPayload);
+            }
+          });
           return res.json({ message: "Pass Accepted", success: true });
         })
         .catch((error) => {
@@ -26,14 +36,24 @@ const passAccept = async (req, res) => {
 const passReject = async (req, res) => {
   const { id, userId } = req.body;
   try {
-    await wardenModel.find({ _id: userId }).then(async (data) => {
+    await wardenModel.findById(userId).then(async (data) => {
       await newRequestModel
         .findByIdAndUpdate(
           id,
-          { status: "3", warden: data[0].userName },
+          { status: "3", warden: data.userName },
           { new: true }
         )
-        .then(() => {
+        .then(async () => {
+          await studentModel.findById(id).then((studentData) => {
+            if (studentData.FCMToken) {
+              const dataPayload = {
+                title: "Your Pass Rejected",
+                body: `Your Pass Rejected By ${data.userName}`,
+                screen: "/(student)/(tabs)/prevPass",
+              };
+              notificationSend(studentData.FCMToken, dataPayload);
+            }
+          });
           return res.json({ message: "Pass Rejected", success: true });
         })
         .catch((error) => {
@@ -82,12 +102,12 @@ const allAcceptPass = async (req, res) => {
 
 const allRejectPass = async (req, res) => {
   try {
-    await wardenModel.findOne({ _id: req.params.id }).then(async (warden) => {      
+    await wardenModel.findOne({ _id: req.params.id }).then(async (warden) => {
       await newRequestModel
-      .find({ status: "3", delete: false, warden: warden.userName })
-      .sort({ createdAt: "descending" })
-      .then((pass) => {
-          console.log(pass)
+        .find({ status: "3", delete: false, warden: warden.userName })
+        .sort({ createdAt: "descending" })
+        .then((pass) => {
+          console.log(pass);
           return res.json({ message: "Reject Passes", pass, success: true });
         });
     });

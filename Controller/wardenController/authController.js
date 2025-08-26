@@ -30,8 +30,7 @@ const wardenLoginController = async (req, res) => {
             Token,
             success: true,
           });
-        }
-        else{
+        } else {
           return res.json({
             message: "Password Not Match",
             success: false,

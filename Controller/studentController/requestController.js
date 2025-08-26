@@ -3,7 +3,6 @@ const studentModel = require("../../Model/Schema/studentModel");
 const wardenModel = require("../../Model/Schema/wardenModel");
 const notificationSend = require("../../middleware/notificationSend");
 
-
 const newRequest = async (req, res) => {
   const { roomNo, destination, purpose, inDateTime, outDateTime, userId } =
     req.body;
@@ -33,15 +32,16 @@ const newRequest = async (req, res) => {
           RoomNo: roomNo,
           User: userId,
         });
-        await wardenModel.find({ gender : user.Gender }).then((wardenData) => {
+        await wardenModel.find({ gender: user.Gender }).then((wardenData) => {
           if (wardenData.length > 0) {
-            wardenData.map((data) => {
+            wardenData.map(async (data) => {
               if (data.FCMToken) {
-                notificationSend(
-                  "Hostel Outpass",
-                  "New Outpass Request",
-                  data.FCMToken
-                );
+                const dataPayload = {
+                  title: "New Outpass Request",
+                  body: `New Outpass Request from ${user.name}`,
+                  screen: "/(warden)/(tabs)/home",
+                };
+                await notificationSend(user.FCMToken, dataPayload);
               }
             });
           }

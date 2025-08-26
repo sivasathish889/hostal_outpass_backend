@@ -23,6 +23,7 @@ const securityLogin = async (req, res) => {
             otp,
             user: user[0]?._id.toString(),
           };
+          console.log(otp)
           let Token = generateJwtToken({ payload });
           let sendingEmailFormat = Email.split("@")[0].slice(0, 4);
           return res.json({

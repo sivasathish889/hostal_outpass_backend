@@ -8,10 +8,11 @@ const {
   generateJwtToken,
   verifyJwtToken,
 } = require("../../middleware/jsonWebToken");
-
+const notificationSend = require("../../middleware/notificationSend"); 
 const LoginController = async (req, res) => {
   try {
     const { registerNumber, password, fcmToken } = req.body;
+    console.log(req.body);
     await studentModel
       .find({ RegisterNumber: registerNumber })
       .then(async (user) => {
