@@ -34,27 +34,28 @@ const finishedPasses = async (req, res) => {
   }
 };
 const updateOutTmePass = async (req, res) => {
-  const { id, userId } = req.body;
+  const { id, userId, passId } = req.body;
   try {
     await securityModel.findById(userId).then(async (data) => {
+      console.log(passId);
       await newRequestModel
         .findByIdAndUpdate(
-          id,
+          passId,
           {
             studentOutTime: new Date().toLocaleString(),
             security: data.userName,
           },
           { new: true }
         )
-        .then(async () => {
+        .then(async (updatedData) => {
           await studentModel.findById(id).then(async (studentData) => {
             if (studentData.FCMToken) {
                const dataPayload = {
                     title: "Your Pass In Time Registered",
-                    body: `Your Pass In Time Registered By ${data.userName}`,
+                    body: `Your ${updatedData.Purpose} Pass In Time Registered By ${data.userName}`,
                     screen: "/(student)/(tabs)/prevPass",
                   };
-              notificationSend(studentData.FCMToken, dataPayload);
+              await notificationSend(studentData.FCMToken, dataPayload);
             }
           });
           return res.json({ message: "Out Time Registered", success: true });
@@ -69,14 +70,14 @@ const updateOutTmePass = async (req, res) => {
 };
 
 const updateInTimePass = async (req, res) => {
-  const { id, userId } = req.body;
+  const { id, userId, passId } = req.body;
   try {
     await securityModel.find({ _id: userId }).then(async (userData) => {
-      await newRequestModel.findById(userId).then(async (data) => {
+      await newRequestModel.findById(passId).then(async (data) => {
         if (data.studentOutTime != undefined) {
           await newRequestModel
             .findByIdAndUpdate(
-              id,
+              passId,
               {
                 studentInTime: new Date().toLocaleString(),
                 security: userData.userName,
@@ -84,15 +85,15 @@ const updateInTimePass = async (req, res) => {
               },
               { new: true }
             )
-            .then(async () => {
+            .then(async (updatedData) => {
               await studentModel.findById(id).then(async (studentData) => {
                 if (studentData.FCMToken) {
                   const dataPayload = {
                     title: "Your Pass Out Time Registered",
-                    body: `Your Pass Out Time Registered By ${data.userName}`,
+                    body: `Your ${updatedData.Purpose} Pass Out Time Registered By ${data.userName}`,
                     screen: "/(student)/(tabs)/prevPass",
                   };
-                  notificationSend(studentData.FCMToken, dataPayload);
+                  await notificationSend(studentData.FCMToken, dataPayload);
                 }
               });
               return res.json({

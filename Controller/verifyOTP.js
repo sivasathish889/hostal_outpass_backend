@@ -18,8 +18,9 @@ const otpVerifier = async (req, res) => {
           { new: true }
         );
       } else if (security) {
+        console.log("security", user);
         await securityModel.findOneAndUpdate(
-          { _id: user._id },
+          { _id: user },
           { FCMToken: fcmToken },
           { new: true }
         );
