@@ -32,7 +32,7 @@ const newRequest = async (req, res) => {
           RoomNo: roomNo,
           User: userId,
         });
-        await wardenModel.find({ gender: user.Gender }).then((wardenData) => {
+        await wardenModel.find({ gender: user.Gender, FCMToken: { $ne: null } }).then((wardenData) => {
           if (wardenData.length > 0) {
             wardenData.map(async (data) => {
               if (data.FCMToken) {
@@ -41,7 +41,7 @@ const newRequest = async (req, res) => {
                   body: `New Outpass Request from ${user.name}`,
                   screen: "/(warden)/(tabs)/home",
                 };
-                await notificationSend(user.FCMToken, dataPayload);
+                await notificationSend(data.FCMToken, dataPayload);
               }
             });
           }

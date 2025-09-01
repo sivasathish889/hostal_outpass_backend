@@ -1,9 +1,8 @@
 var admin = require("firebase-admin");
 
 const notificationSend = async (fcmToken, dataPayload) => {
-
   try {
-    const response = await admin.messaging().sendEachForMulticast({
+    const message = {
       token: fcmToken,
       data : dataPayload ,
       android: {
@@ -20,7 +19,8 @@ const notificationSend = async (fcmToken, dataPayload) => {
           },
         },
       },
-    });
+    };
+    const response = await admin.messaging().send(message);
     console.log("Successfully sent message:", response);
   } catch (error) {
     console.log(error);
@@ -29,3 +29,4 @@ const notificationSend = async (fcmToken, dataPayload) => {
 };
 
 module.exports = notificationSend;
+

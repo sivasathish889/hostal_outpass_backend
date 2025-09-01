@@ -9,12 +9,10 @@ const studentRouter = require("./Routes/studentRouter");
 const wardenRouter = require("./Routes/wardenRouter");
 const securityRouter = require("./Routes/securityRouter");
 const adminPanel = require("./Routes/adminPanel");
-const bodyParser = require("body-parser")
 var admin = require("firebase-admin");
-var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(JSON.parse(process.env.GCP_CREDENTIALS)),
 });
 
 // envoronment variable

@@ -1,26 +1,26 @@
 const newRequestModel = require("../../Model/Schema/newRequestModel");
 const wardenModel = require("../../Model/Schema/wardenModel");
 const studentModel = require("../../Model/Schema/studentModel");
+const notificationSend = require("../../middleware/notificationSend");
 const passAccept = async (req, res) => {
-  const { id, userId } = req.body;
-
+  const { id, userId, passId } = req.body;
   try {
     await wardenModel.findById(userId).then(async (data) => {
       await newRequestModel
         .findByIdAndUpdate(
-          id,
+          passId,
           { status: "2", warden: data.userName },
           { new: true }
         )
-        .then(async () => {
-          await studentModel.findById(id).then((studentData) => {
+        .then(async (updateData) => {
+          await studentModel.findById(id).then(async (studentData) => {
             if (studentData.FCMToken) {
               const dataPayload = {
                 title: "Your Pass Accepted",
-                body: `Your Pass Accepted By ${data.userName}`,
+                body: `Your ${updateData.Purpose} Pass Accepted By ${data.userName}`,
                 screen: "/(student)/(tabs)/prevPass",
               };
-              notificationSend(studentData.FCMToken, dataPayload);
+              await notificationSend(studentData.FCMToken, dataPayload);
             }
           });
           return res.json({ message: "Pass Accepted", success: true });
@@ -34,21 +34,23 @@ const passAccept = async (req, res) => {
   }
 };
 const passReject = async (req, res) => {
-  const { id, userId } = req.body;
+  const { id, userId, passId } = req.body;
+  console.log(passId)
   try {
     await wardenModel.findById(userId).then(async (data) => {
       await newRequestModel
         .findByIdAndUpdate(
-          id,
+          passId,
           { status: "3", warden: data.userName },
           { new: true }
         )
-        .then(async () => {
+        .then(async (updatePassData) => {
+          console.log(updatePassData)
           await studentModel.findById(id).then((studentData) => {
             if (studentData.FCMToken) {
               const dataPayload = {
                 title: "Your Pass Rejected",
-                body: `Your Pass Rejected By ${data.userName}`,
+                body: `Your ${updatePassData.Purpose} Pass Rejected By ${data.userName}`,
                 screen: "/(student)/(tabs)/prevPass",
               };
               notificationSend(studentData.FCMToken, dataPayload);
