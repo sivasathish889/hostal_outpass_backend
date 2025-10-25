@@ -50,11 +50,11 @@ const updateOutTmePass = async (req, res) => {
         .then(async (updatedData) => {
           await studentModel.findById(id).then(async (studentData) => {
             if (studentData.FCMToken) {
-               const dataPayload = {
-                    title: "Your Pass In Time Registered",
-                    body: `Your ${updatedData.Purpose} Pass In Time Registered By ${data.userName}`,
-                    screen: "/(student)/(tabs)/prevPass",
-                  };
+              const dataPayload = {
+                title: "Your Pass In Time Registered",
+                body: `Your ${updatedData.Purpose} Pass In Time Registered By ${data.userName}`,
+                screen: "/(student)/(tabs)/prevPass",
+              };
               await notificationSend(studentData.FCMToken, dataPayload);
             }
           });
@@ -72,7 +72,7 @@ const updateOutTmePass = async (req, res) => {
 const updateInTimePass = async (req, res) => {
   const { id, userId, passId } = req.body;
   try {
-    await securityModel.find({ _id: userId }).then(async (userData) => {
+    await securityModel.findById(userId).then(async (userData) => {
       await newRequestModel.findById(passId).then(async (data) => {
         if (data.studentOutTime != undefined) {
           await newRequestModel
@@ -90,7 +90,7 @@ const updateInTimePass = async (req, res) => {
                 if (studentData.FCMToken) {
                   const dataPayload = {
                     title: "Your Pass Out Time Registered",
-                    body: `Your ${updatedData.Purpose} Pass Out Time Registered By ${data.userName}`,
+                    body: `Your ${updatedData.Purpose} Pass Out Time Registered By ${userData.userName}`,
                     screen: "/(student)/(tabs)/prevPass",
                   };
                   await notificationSend(studentData.FCMToken, dataPayload);

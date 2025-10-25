@@ -1,0 +1,8 @@
+services:
+  outpass-backend:
+    image : outpass-backend
+    build : ./
+    ports :
+      - 5000:5000
+    env_file :
+      - .env
