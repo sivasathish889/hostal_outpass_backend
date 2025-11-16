@@ -91,36 +91,6 @@ This system provides a complete outpass management solution with role-based acce
 http://localhost:5000
 ```
 
-### Authentication Endpoints
-
-#### Student Routes
-- `POST /student/register` - Student registration
-- `POST /student/register/verify` - Verify registration OTP
-- `POST /student/login` - Student login
-- `POST /student/forgetPassword` - Password reset request
-- `POST /student/forgetPassword/verify` - Verify password reset OTP
-- `POST /student/changePassword` - Change password
-
-#### Student Outpass Management
-- `POST /student/newRequest` - Create new outpass request
-- `GET /student/pendingRequests/:userId` - Get pending requests
-- `PUT /student/passUpdate` - Update outpass request
-- `POST /student/passDelete/:passId` - Delete outpass request
-- `GET /student/AllRequests/:userId` - Get all requests history
-- `GET /student/:userId` - Get student profile data
-
-#### Warden Routes
-- `POST /warden/*` - Warden authentication and management
-- Outpass approval/rejection endpoints
-
-#### Security Routes
-- `POST /security/*` - Security guard authentication
-- Outpass verification endpoints
-
-#### Admin Routes
-- `POST /api/admin/*` - Admin panel operations
-- System management endpoints
-
 ## 🗂️ Project Structure
 
 ```
