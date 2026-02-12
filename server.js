@@ -10,7 +10,7 @@ const wardenRouter = require("./Routes/wardenRouter");
 const securityRouter = require("./Routes/securityRouter");
 const adminPanel = require("./Routes/adminPanel");
 var admin = require("firebase-admin");
-var serviceAccount = require("./serviceAccountKey.json");
+// var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(JSON.parse(process.env.GCP_CREDENTIALS)),
