@@ -3,8 +3,44 @@ const wardenModel = require("../../Model/Schema/wardenModel");
 
 const getWardenList = async (req, res) => {
   try {
-    await wardenModel.find().then((users) => {
-      return res.json({ message: "Warden details", users, success: true });
+    const { searchQuery, genderQuery, page = 1, limit = 10 } = req.query;
+    
+    const query = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { userName: { $regex: searchQuery, $options: "i" } },
+        { email: { $regex: searchQuery, $options: "i" } }
+      ];
+
+      const parsedNum = Number(searchQuery);
+      if (!isNaN(parsedNum) && searchQuery.trim() !== "") {
+        query.$or.push({ phoneNumber: parsedNum });
+      } else {
+        query.$or.push({ $expr: { $regexMatch: { input: { $toString: "$phoneNumber" }, regex: searchQuery, options: "i" } } });
+      }
+    }
+
+    if (genderQuery) {
+      query.gender = { $regex: `^${genderQuery}$`, $options: "i" };
+    }
+
+    const skip = (Number(page) - 1) * Number(limit);
+
+    const isQueryEmpty = Object.keys(query).length === 0;
+
+    const [users, total] = await Promise.all([
+      wardenModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(Number(limit)).lean(),
+      isQueryEmpty ? wardenModel.estimatedDocumentCount() : wardenModel.countDocuments(query)
+    ]);
+
+    return res.json({ 
+      message: "Warden details", 
+      users, 
+      total,
+      totalPages: Math.ceil(total / Number(limit)),
+      currentPage: Number(page),
+      success: true 
     });
   } catch (error) {
     return res.json({ message: error.message, success: false });

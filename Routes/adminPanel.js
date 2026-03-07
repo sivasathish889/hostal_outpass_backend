@@ -23,8 +23,10 @@ const {
   register,
   getUserData,
 } = require("../Controller/adminController/auth");
+const { getDashboardStats } = require("../Controller/adminController/dashboard");
 const routes = express.Router();
 
+routes.get("/getDashboardStats", getDashboardStats);
 routes.get("/getStudentList", getStudentList);
 routes.get("/getWardenList", getWardenList);
 routes.get("/getSecurityList", getSecurity);

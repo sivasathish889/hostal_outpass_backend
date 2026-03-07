@@ -8,10 +8,8 @@ const otpVerifier = async (req, res) => {
     const verifyOtp = verifyJwtToken(backendOtp).payload.otp;
     const user = verifyJwtToken(backendOtp).payload.user;
     const wardenGender = verifyJwtToken(backendOtp).payload.gender;
-
     if (Number(otp) === Number(verifyOtp)) {
       if (warden) {
-        console.log("warden", user);
         await wardenModel.findOneAndUpdate(
           { _id: user },
           { FCMToken: fcmToken },

@@ -78,4 +78,10 @@ const newReqestSchema = new mongoose.Schema({
 
 },{timestamps : true,})
 
+newReqestSchema.index({ createdAt: -1 });
+newReqestSchema.index({ year: 1, Department: 1 });
+newReqestSchema.index({ RegisterNumber: 1 });
+newReqestSchema.index({ PhoneNumber: 1 });
+newReqestSchema.index({ status: 1 });
+
 module.exports = mongoose.model('Request', newReqestSchema)

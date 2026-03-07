@@ -55,4 +55,11 @@ const studentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+studentSchema.index({ createdAt: -1 });
+studentSchema.index({ year: 1, Department: 1 });
+studentSchema.index({ RegisterNumber: 1 });
+studentSchema.index({ PhoneNumber: 1 });
+studentSchema.index({ name: 1 });
+studentSchema.index({ Email: 1 });
+
 module.exports = mongoose.model("Students", studentSchema);

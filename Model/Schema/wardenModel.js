@@ -38,4 +38,6 @@ const wardenSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+wardenSchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model("Warden", wardenSchema);

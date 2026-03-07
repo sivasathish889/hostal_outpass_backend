@@ -8,7 +8,7 @@ const {
   generateJwtToken,
   verifyJwtToken,
 } = require("../../middleware/jsonWebToken");
-const notificationSend = require("../../middleware/notificationSend"); 
+const notificationSend = require("../../middleware/notificationSend");
 const LoginController = async (req, res) => {
   try {
     const { registerNumber, password, fcmToken } = req.body;
@@ -70,7 +70,7 @@ const registerController = async (req, res) => {
       password != null &&
       confirmPassword != null
     ) {
-      if (phoneNumber == parentNumber) {
+      if (Number(phoneNumber) == Number(parentNumber)) {
         return res.json({ message: "Phone Number Same", success: false });
       }
       if (password === confirmPassword) {
@@ -139,6 +139,7 @@ const registerOtpController = async (req, res) => {
     let tokens = Token;
     if (tokens) {
       const userData = verifyJwtToken(tokens).payload;
+      console.log(userData.parentNumber)
       if (Number(otp) === Number(userData.otp)) {
         await studentModel.create({
           name: userData.name,
@@ -146,8 +147,8 @@ const registerOtpController = async (req, res) => {
           Department: userData.department,
           year: userData.year,
           Gender: userData.gender,
-          PhoneNumber: userData.phoneNumber,
-          ParentNumber: userData.parentNumber,
+          PhoneNumber: Number(userData.phoneNumber),
+          ParentNumber: Number(userData.parentNumber),
           District: userData.district,
           Password: userData.hashingPassword,
           Email: userData.eMail,
@@ -162,6 +163,7 @@ const registerOtpController = async (req, res) => {
       return res.json({ message: "OTP expired" });
     }
   } catch (error) {
+    console.log(error)
     return res.json({ message: error.message, success: false });
   }
 };
@@ -265,7 +267,7 @@ const studentData = async (req, res) => {
     await studentModel.find({ _id: userId }).then((data) => {
       return res.status(200).json({ message: "Ok", data, success: true });
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 module.exports = {

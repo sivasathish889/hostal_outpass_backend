@@ -35,4 +35,6 @@ const securitySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+securitySchema.index({ createdAt: -1 });
+
 module.exports = mongoose.model("security", securitySchema);
