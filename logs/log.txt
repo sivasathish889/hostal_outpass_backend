@@ -908,3 +908,14 @@
 3/7/2026 -- 11:50:16 --  GET -- /api/admin/getStudentList?searchQuery=&dateQuery=&yearQuery=&page=1&limit=10  200 
 3/7/2026 -- 11:50:44 --  POST -- /student/newRequest  200 
 3/7/2026 -- 11:50:44 --  GET -- /student/pendingRequests/69abc3924c47fb24d0c9049a  200 
+3/7/2026 -- 11:53:13 --  GET -- /api/admin/getDashboardStats  200 
+3/7/2026 -- 11:53:15 --  GET -- /api/admin/getWardenList?searchQuery=&genderQuery=&page=1&limit=10  200 
+3/7/2026 -- 11:53:17 --  GET -- /api/admin/getSecurityList?searchQuery=&page=1&limit=10  200 
+3/7/2026 -- 11:53:18 --  GET -- /api/admin/getPass?searchQuery=&startDateQuery=&endDateQuery=&yearQuery=&departmentQuery=&page=1&limit=10  200 
+3/7/2026 -- 11:53:19 --  GET -- /api/admin/getStudentList?searchQuery=&dateQuery=&yearQuery=&page=1&limit=10  200 
+3/7/2026 -- 11:53:47 --  GET -- /api/admin/get-userData/68066fb55779449ffe210261  200 
+3/7/2026 -- 11:53:48 --  GET -- /api/admin/getStudentList?searchQuery=&dateQuery=&yearQuery=&page=1&limit=10  200 
+3/7/2026 -- 11:54:25 --  GET -- /api/admin/get-userData/68066fb55779449ffe210261  200 
+3/7/2026 -- 11:54:26 --  GET -- /api/admin/getStudentList?searchQuery=&dateQuery=&yearQuery=&page=1&limit=10  200 
+3/7/2026 -- 11:59:6 --  GET -- /api/admin/get-userData/68066fb55779449ffe210261  200 
+3/7/2026 -- 11:59:7 --  GET -- /api/admin/getStudentList?searchQuery=&dateQuery=&yearQuery=&page=1&limit=10  200 
